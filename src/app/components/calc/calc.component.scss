@@ -1,0 +1,65 @@
+
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.calc-content-container {
+  display: flex;
+  flex-direction: row;
+
+  .calc-content-container {
+    display: flex;
+    flex: 0 0 50%;
+    flex-direction: column;
+
+
+    &--left {
+      //display: flex;
+      //flex: 0 0 50%;
+      //flex-direction: column;
+      //background: goldenrod;
+    }
+
+    &--right {
+      //display: flex;
+      //flex: 0 0 50%;
+      //flex-direction: column;
+      //background: red;
+    }
+
+
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  margin: .5rem;
+  padding: .5rem;
+  > * {
+    margin-bottom: 1rem;
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  > div {
+    flex: 50%;
+  }
+
+  &--green {
+    color: green;
+  }
+}
+
+
+.test {
+  > * {
+    margin-bottom: 1rem;
+  }
+}

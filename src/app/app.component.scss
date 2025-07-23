@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+
+.test {
+  display: flex;
+  width: 300px;
+  height: 200px;
+  background: linear-gradient(#247e46, #9fd050);
+  //-webkit-background-clip: text;
+  //background-clip: text;
+  //-webkit-text-fill-color: transparent;
+}

@@ -1,0 +1,157 @@
+.customs-calculator-info {
+  font-family: 'Roboto', Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.info-section {
+  margin-bottom: 40px;
+  background-color: white;
+  padding: 25px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  color: #2c3e50;
+  font-size: 28px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.subsection-title {
+  color: #2c3e50;
+  font-size: 22px;
+  margin: 25px 0 15px;
+  font-weight: 500;
+}
+
+.small-title {
+  color: #2c3e50;
+  font-size: 18px;
+  margin: 20px 0 10px;
+  font-weight: 500;
+}
+
+.table-title {
+  color: #2c3e50;
+  font-size: 18px;
+  margin: 15px 0;
+  font-weight: 500;
+}
+
+.divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 15px 0;
+}
+
+.section-text {
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.section-subtitle {
+  font-size: 17px;
+  margin: 20px 0 10px;
+  font-weight: 500;
+}
+
+.highlight-text {
+  color: #485574;
+  font-weight: 700;
+}
+
+.feature-list {
+  padding-left: 20px;
+  margin: 15px 0;
+}
+
+.feature-list li {
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 15px;
+  list-style-type: none;
+}
+
+.feature-list li:before {
+  content: "•";
+  color: #485574;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.numbered-list {
+  padding-left: 25px;
+  margin: 15px 0;
+}
+
+.numbered-list li {
+  margin-bottom: 10px;
+}
+
+.list-highlight {
+  color: #485574;
+  font-weight: 700;
+}
+
+.tables-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 40px 0;
+}
+
+.custom-table {
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.custom-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-table th {
+  background-color: #f2f2f2;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.custom-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.custom-table tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .info-section {
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .subsection-title {
+    font-size: 20px;
+  }
+
+  .custom-table {
+    overflow-x: auto;
+    display: block;
+  }
+}

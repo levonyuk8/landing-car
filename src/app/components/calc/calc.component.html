@@ -1,0 +1,225 @@
+<h1>Калькулятор растаможки авто из США в Беларусь 2025</h1>
+<form [formGroup]="calcForm">
+
+  <p-fieldset legend="Калькулятор расходов">
+
+    <div class="calc-content-container">
+      <div class="calc-content-container--left">
+        <p-fieldset legend="Ключевые параметры">
+
+          <p-fluid>
+
+
+            <div class="content">
+              <div>
+                <label class="font-bold block mb-2"> Тип транспорта </label>
+                <p-select [options]="typesOfTransport"
+                          formControlName="transport">
+                </p-select>
+              </div>
+
+              <div>
+                <label class="font-bold block mb-2"> Стоимость авто, $ </label>
+                <p-inputgroup>
+                  <p-inputnumber [min]="minCarCost" [max]="maxCarCost" inputId="integeronly"
+                                 formControlName="carPrice"></p-inputnumber>
+                  <p-inputgroup-addon>$</p-inputgroup-addon>
+                </p-inputgroup>
+              </div>
+
+              <div class="row">
+                <div>
+                  <label class="font-bold block mb-2"> Возраст авто, лет </label>
+                  <p-select [options]="carAgeList"
+                            formControlName="carAge"
+                            class="w-full md:w-56">
+                  </p-select>
+                </div>
+
+                <div>
+                  <label class="font-bold block mb-2"> Объем двигателя, куб.см. </label>
+                  <p-inputnumber inputId="integeronly" formControlName="engine"></p-inputnumber>
+                </div>
+              </div>
+
+              <div class="flex-auto">
+                <label class="font-bold block mb-2"> Площадка </label>
+                <p-select [options]="venueList" formControlName="venue" optionLabel="value" [filter]="true"
+                          filterBy="value"
+                          class="w-full md:w-56">
+                  <ng-template #selectedItem let-selectedOption>
+                    <div class="flex items-center gap-2">
+                      <div>{{ selectedOption.value }}</div>
+                    </div>
+                  </ng-template>
+                  <ng-template let-country #item>
+                    <div class="flex items-center gap-2">
+                      <div>{{ country.value }}</div>
+                    </div>
+                  </ng-template>
+                </p-select>
+              </div>
+
+              <div class="flex-auto">
+                <label class="font-bold block mb-2"> Выбор аукциона </label>
+                <div class="card flex justify-center">
+                  <p-select [options]="groupedAuctionList" formControlName="auction"
+                            class="w-full md:w-56">
+                  </p-select>
+                </div>
+              </div>
+
+
+              <div class="flex-auto">
+                <label class="font-bold block mb-2"> Доставка в </label>
+                <p-select [options]="deliveryToAddresses"
+                          formControlName="deliveryTo"
+                          class="w-full md:w-56">
+                </p-select>
+              </div>
+
+              <div class="test">
+
+                <div class="flex items-center">
+                  <p-checkbox formControlName="isGibrid" [binary]="true" [inputId]="'isGibrid'"/>
+                  <label [for]="'isGibrid'" class="ml-2"> Гибрид </label>
+                </div>
+
+                @if (calcForm.get('isGibrid')?.value) {
+                  <div class="flex items-center">
+                    <p-toggleswitch [disabled]="!calcForm.get('isGibrid')?.value" [inputId]="'isConnectableGibrid'"
+                                    name="isConnectableGibrid" formControlName="isConnectableGibrid"/>
+                    <label [for]="'isConnectableGibrid'" class="ml-2"> Подключаемый гибрид </label>
+                  </div>
+                }
+
+
+                <div class="flex items-center">
+                  <p-checkbox formControlName="isElectro" [binary]="true" [inputId]="'isElectro'"/>
+                  <label [for]="'isElectro'" class="ml-2"> Электромобиль </label>
+                </div>
+
+                <div class="flex items-center">
+                  <p-checkbox formControlName="isSUV" [binary]="true" [inputId]="'isSUV'"/>
+                  <label [for]="'isSUV'" class="ml-2"> Внедорожник </label>
+                </div>
+
+                <div class="flex items-center">
+                  <p-checkbox formControlName="preferential" [binary]="true" [inputId]="'preferential'"/>
+                  <label [for]="'preferential'" class="ml-2"> Льготная растаможка </label>
+                </div>
+
+                <div class="flex items-center">
+                  <p-checkbox formControlName="isOffside" [binary]="true" [inputId]="'isOffside'"/>
+                  <label [for]="'isOffside'" class="ml-2"> Offsite </label>
+                </div>
+              </div>
+
+
+            </div>
+          </p-fluid>
+
+          <!--    <p>-->
+          <!--      Lorem ipsum dolor sit amet...-->
+          <!--    </p>-->
+        </p-fieldset>
+
+      </div>
+
+      <div class="calc-content-container--right">
+        <p-fieldset legend="Расчет">
+
+          @if (books(); as data) {
+
+            <p-fluid>
+              <div class="content">
+                <h3>Покупка и доставка</h3>
+                <p-divider type="solid"/>
+
+                <div class="row">
+                  <label>Стоимость авто</label>
+                  <label class="row--green">{{ data.carPrice + ' ' + data.carPrice_CUR }}</label>
+                </div>
+
+                <div class="row">
+                  <label>Аукционный сбор</label>
+                  <label class="row--green">{{ data.auctionFee + ' ' + data.auctionFee_CUR }}</label>
+                </div>
+
+                <div class="row">
+                  <label>Транспортировка в порт США</label>
+                  <label class="row--green">{{ data.deliveryToPortUSA + ' ' + data.deliveryToPortUSA_CUR }}</label>
+                </div>
+
+                <div class="row">
+                  <label>Доставка от порта
+                    до {{ calcForm.get('deliveryTo')?.value === 'by' ? 'Клайпеды' : 'Поти' }}</label>
+                  <label class="row--green">{{ data.deliveryFromPortUSA + ' ' + data.deliveryFromPortUSA_CUR }}</label>
+                </div>
+
+                <div class="row">
+                  <label>Стоимость наших услуг</label>
+                  <label class="row--green">{{ ourServicePrice + ' ' + data.ourServicePrice_CUR }}</label>
+                </div>
+
+                <h3>Растаможка и оформление</h3>
+                <p-divider type="solid"/>
+
+                <div class="row">
+                  <label>Таможенная пошлина</label>
+                  <label class="row--green">{{ data.customDuty + ' ' + data.customDuty_CUR }}</label>
+                </div>
+
+                <div class="row">
+                  <label>Таможенный сбор</label>
+                  <label class="row--green">{{ data.customFee + ' ' + data.customFee_CUR }}</label>
+                </div>
+
+                <div class="row">
+                  <label>Утилизационный сбор</label>
+                  <label class="row--green">{{ data.junkFee + ' ' + data.junkFee_CUR }}</label>
+                </div>
+
+                <div class="row">
+                  <label>Расходы на СВХ</label>
+                  <label class="row--green">{{ data.svxServicePrice + ' ' + data.svxServicePrice_CUR }}</label>
+                </div>
+
+                <div class="row">
+                  <label>ИТОГО</label>
+                  <label class="row--green">{{ data.resultPrice + ' ' + data.resultPrice_CUR }}</label>
+                </div>
+
+                @if (calcForm.get('deliveryTo')?.value === 'by' || 'ge') {
+                  <div style="color: red">
+                    * В расчет не входит стоимость доставки Клайпеда - Минск и комиссии за переводы.
+                  </div>
+
+                }
+
+                @if (calcForm.get('deliveryTo')?.value === 'ge') {
+                  @if (data.actualPotiDestinationDeliveryPrice_autovoz || data.actualPotiDestinationDeliveryPrice_tent) {
+
+                    <div style="color: red">
+                      * Актуальная стоимость доставки Поти - Минск на дату покупки составляет
+                      {{ data.actualPotiDestinationDeliveryPrice_autovoz }} {{ data.actualPotiDestinationDeliveryPrice_CUR }}
+                      (Автовоз);
+                      {{ data.actualPotiDestinationDeliveryPrice_tent }} {{ data.actualPotiDestinationDeliveryPrice_tent_CUR }}
+                      (Тент).
+                    </div>
+                  }
+
+                }
+              </div>
+            </p-fluid>
+          }
+
+
+        </p-fieldset>
+        <br>
+
+      </div>
+
+    </div>
+  </p-fieldset>
+</form>
