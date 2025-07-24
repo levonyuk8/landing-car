@@ -57,22 +57,25 @@ export class CalcService {
   // СЕРВИСНЫЙ СБОР: $95 долларов США за единицу
   // (включая выдачу и погрузку)
   feeTiers: FeeTier[] = [
-    { fromRange: 0, toRange: 500, baseFee: 99, additionalFees: 50 },
-    { fromRange: 500, toRange: 1000, baseFee: 149, additionalFees: 50 },
-    { fromRange: 1000, toRange: 2000, baseFee: 199, additionalFees: 50 },
-    { fromRange: 2000, toRange: 3000, baseFee: 249, additionalFees: 50 },
-    { fromRange: 15_000, toRange: null, baseFee: 799, additionalFees: 200 },
+    {fromRange: 0, toRange: 500, baseFee: 99, additionalFees: 50},
+    {fromRange: 500, toRange: 1000, baseFee: 149, additionalFees: 50},
+    {fromRange: 1000, toRange: 2000, baseFee: 199, additionalFees: 50},
+    {fromRange: 2000, toRange: 3000, baseFee: 249, additionalFees: 50},
+    {fromRange: 15_000, toRange: null, baseFee: 799, additionalFees: 200},
   ];
 
 
-  constructor() { }
+  constructor() {
+  }
 
   getDataFromWMCalculator(params: any) {
     // const {carPrice, deliveryTo, carAge, auction} = params;
 
     console.log(params);
 
-    return this.http.post<caclData>(this.API_URL, { ...params});
+    return this.http.post<caclData>(this.API_URL, {...params});
   }
+
+
 
 }
