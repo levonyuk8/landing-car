@@ -50,7 +50,7 @@ export class CalcComponent implements OnInit {
   public readonly maxCarCost = 100_000;
   public readonly maxCarAge = 15;
 
-  priceDefaultValue = 10_000;
+  priceDefaultValue = 3_000;
   engineCapacityDefaultValue = 2_000;
 
 
@@ -60,7 +60,7 @@ export class CalcComponent implements OnInit {
         value: 0,
         label: `Менее года`,
       },
-      ...Array(this.maxCarAge).fill(0).map((_, i) => Object({label: i, value: i})),
+      ...Array(this.maxCarAge).fill(0).map((_, i) => Object({label: ++i, value: ++i})),
       {
         value: 16,
         label: `Более 15`,
@@ -129,7 +129,7 @@ export class CalcComponent implements OnInit {
       transport: [this.typesOfTransport[0].value, Validators.required],
       carPrice: [this.priceDefaultValue, Validators.required],
       sliderPrice: [this.priceDefaultValue, Validators.required],
-      carAge: [this.carAgeList[0].value, Validators.required],
+      age: [this.carAgeList[1].value, Validators.required],
       engine: [this.engineCapacityDefaultValue, Validators.required],
       platform: [this.venueList[0].value, Validators.required],
       auction: [this.groupedAuctionList[0].value, Validators.required],
