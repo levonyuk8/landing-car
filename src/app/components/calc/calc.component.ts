@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
+import {ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {CalcService} from '../calc.service';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {debounceTime, distinctUntilChanged, map, of, startWith, switchMap, tap} from 'rxjs';
@@ -10,7 +10,7 @@ import {InputGroupAddon} from 'primeng/inputgroupaddon';
 import {Divider} from 'primeng/divider';
 import {InputNumberModule} from 'primeng/inputnumber';
 import {Checkbox} from 'primeng/checkbox';
-import {toObservable, toSignal} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed, toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {ToggleSwitch} from 'primeng/toggleswitch';
 import {locationList} from './location-list';
 
@@ -41,6 +41,7 @@ export class CalcComponent implements OnInit {
 
   public readonly ourServicePrice = 900;
   private fb = inject(FormBuilder)
+  private destroyRef = inject(DestroyRef)
   calcForm!: FormGroup;
 
   venueList = locationList;
@@ -80,19 +81,19 @@ export class CalcComponent implements OnInit {
 
   typesOfTransport = [
     {
-      value: 'auto',
+      value: TRANSPORT_TYPE.auto,
       label: 'Автомобиль'
     },
     {
-      value: 'moto',
+      value: TRANSPORT_TYPE.moto,
       label: 'Мотоцикл'
     },
     {
-      value: 'moto-big',
+      value: TRANSPORT_TYPE.moto_big,
       label: 'Большой мотоцикл'
     },
     {
-      value: 'quadro',
+      value: TRANSPORT_TYPE.quadro,
       label: 'Квадроцикл'
     },
   ]
@@ -103,13 +104,14 @@ export class CalcComponent implements OnInit {
   ];
 
   params = signal(null);
+  shippingCost = signal(0);
   private searchParams = toObservable(this.params);
 
-  books = toSignal(
+  calcData = toSignal(
     this.searchParams.pipe(
-      distinctUntilChanged(),
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(500),
-      switchMap(term => this.fetchCalcResult(term))
+      switchMap((term: any) => this.fetchCalcResult(term))
     )
   );
 
@@ -118,7 +120,11 @@ export class CalcComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.createForm();
+    this.createValueChangesByControls();
+  }
 
+  private createForm() {
     this.calcForm = this.fb.group({
       transport: [this.typesOfTransport[0].value, Validators.required],
       carPrice: [this.priceDefaultValue, Validators.required],
@@ -127,7 +133,7 @@ export class CalcComponent implements OnInit {
       engine: [this.engineCapacityDefaultValue, Validators.required],
       platform: [this.venueList[0].value, Validators.required],
       auction: [this.groupedAuctionList[0].value, Validators.required],
-      deliveryTo: [this.deliveryToAddresses[0].value, Validators.required],
+      deliveryTo: [this.deliveryToAddresses[1].value, Validators.required],
       isElectro: [false],
       isGibrid: [false],
       isOffside: [false],
@@ -136,67 +142,69 @@ export class CalcComponent implements OnInit {
       isSUV: [false],
       isConnectableGibrid: [{value: false, disabled: true}],
     });
+  }
 
-    this.calcForm.get('isGibrid')?.valueChanges.subscribe(isMember => {
-      const connectableGibridControl = this.calcForm.get('isConnectableGibrid');
-      const electroControl = this.calcForm.get('isElectro');
-      if (isMember) {
-        connectableGibridControl?.enable();
-        electroControl?.reset();
-      } else {
-        connectableGibridControl?.disable();
-        connectableGibridControl?.reset();
-      }
-    });
+  private createValueChangesByControls() {
+    this.calcForm.get('isGibrid')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(isMember => {
+        const connectableGibridControl = this.calcForm.get('isConnectableGibrid');
+        const electroControl = this.calcForm.get('isElectro');
+        if (isMember) {
+          connectableGibridControl?.enable();
+          electroControl?.reset();
+        } else {
+          connectableGibridControl?.disable();
+          connectableGibridControl?.reset();
+        }
+      });
 
-    this.calcForm.get('isElectro')?.valueChanges.subscribe(isMember => {
-      const gibridControl = this.calcForm.get('isGibrid');
-      if (isMember) gibridControl?.reset();
-    });
+    this.calcForm.get('isElectro')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(isMember => {
+        const gibridControl = this.calcForm.get('isGibrid');
+        if (isMember) gibridControl?.reset();
+      });
 
+
+    this.calcForm.get('transport')?.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap( () => {
+        this.calcForm.get('isGibrid')?.reset();
+        this.calcForm.get('isElectro')?.reset();
+        this.calcForm.get('isSUV')?.reset();
+      })
+    ).subscribe();
 
     this.calcForm?.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef),
       startWith(this.calcForm.value),
       tap(value => {
         this.params.set(value);
+        this.calcShippingCost(value);
       })
     ).subscribe()
+  }
 
-
-    // this.paramsSignal = toSignal( this.calcForm?.valueChanges);
-
-    // this.calcData = toSignal(
-    //   this.calcForm?.valueChanges.pipe(
-    //     startWith(this.calcForm.value),
-    //     distinctUntilChanged(),
-    //     debounceTime(500),
-    //     switchMap((value: any) => this.fetchCalcResult(value))
-    //   )
-    // );
-
-    // this.calcForm.get('sliderPrice')?.valueChanges.subscribe(val => {
-    //   this.calcForm.get('price')?.patchValue(val);
-    // });
-    //
-    // this.calcForm.get('price')?.valueChanges.subscribe(val => {
-    //   const numericValue = Number(val);
-    //   if (!isNaN(numericValue)) {
-    //     this.calcForm.get('sliderPrice')?.patchValue(numericValue);
-    //   }
-    // });
-    //   calc Аукционный сбор
-
-    this.calcForm.get('price')?.valueChanges
-      .pipe(
-        startWith(this.calcForm.get('price')?.value),
-        debounceTime(500),
-        distinctUntilChanged(),
-        switchMap((data: any) => {
-          console.log(data);
-          return of(data);
-        })
-      ).subscribe(val => {
-    })
+  private calcShippingCost(value: any) {
+    switch (value.transport) {
+      case TRANSPORT_TYPE.auto:
+        if (value.isElectro) {
+          this.shippingCost.set(3100);
+          break;
+        }
+        if (value.isSUV) {
+          this.shippingCost.set(2700);
+          break;
+        }
+        this.shippingCost.set(2500)
+        break;
+      case TRANSPORT_TYPE.moto:
+      case TRANSPORT_TYPE.moto_big:
+      case TRANSPORT_TYPE.quadro:
+        this.shippingCost.set(800)
+        break;
+    }
   }
 
   protected readonly TRANSPORT_TYPE = TRANSPORT_TYPE;

@@ -37,20 +37,8 @@ main {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  //background: #ecf0f1;
-
   margin: 0 4rem;
   padding: 2rem 4rem;
-  //background-color: green;
-}
-
-footer {
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 50px;
-  background-color: #000;
 }
 
 p-checkbox, p-toggleswitch {
@@ -87,19 +75,11 @@ p-checkbox, p-toggleswitch {
   padding: 0 !important;
 }
 
-@media (min-width: 576px) {
-  :root {
-    font-size: 14px;
-  }
-}
-
 /* Small devices (phones, 576px and up) */
 @media (max-width: 575px) {
-  :root {
-    font-size: 15px;
-  }
 
   main {
+    font-size: 15px !important;
     padding: 0 !important;
     margin: .5rem !important;
   }
@@ -113,10 +93,8 @@ p-checkbox, p-toggleswitch {
     }
 
     .auc-img-box {
-      flex: 1 0 20%; /* explanation below */
-      //margin: 5px;
+      flex: 1 0 20%;
       height: 100px;
-      //background-color: blue;
     }
 
   }
@@ -125,19 +103,5 @@ p-checkbox, p-toggleswitch {
     .calc-content-container {
       flex-direction: column !important;
     }
-  }
-}
-
-/* Large devices (desktops, 992px and up) */
-@media (min-width: 992px) {
-  :root {
-    font-size: 16px;
-  }
-}
-
-/* Extra large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-  :root {
-    font-size: 17px;
   }
 }
