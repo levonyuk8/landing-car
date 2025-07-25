@@ -60,7 +60,7 @@ export class CalcComponent implements OnInit {
         value: 0,
         label: `Менее года`,
       },
-      ...Array(this.maxCarAge).fill(0).map((_, i) => Object({label: ++i, value: ++i})),
+      ...Array(this.maxCarAge).fill(0).map((_, i) => Object({label: ++i, value: i})),
       {
         value: 16,
         label: `Более 15`,
@@ -120,6 +120,7 @@ export class CalcComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.carAgeList)
     this.createForm();
     this.createValueChangesByControls();
   }
